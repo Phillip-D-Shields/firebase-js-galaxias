@@ -15,15 +15,28 @@
   
   .game-container { 
     position: relative;
-    width: 480px;
-    height: 416px;
-    background: url(/images/sapce-bg.jpg) no-repeat no-repeat;
+    width: 320px;
+    height: 256px;
+    background: url("https://i.pinimg.com/originals/43/e9/16/43e9164cfe2537bb9d6746b4d053d032.gif") no-repeat no-repeat;
     background-size: cover;
+    background-position: right;
     transform: scale(2);
     image-rendering: pixelated;
     border: 2px solid slategray;
   }
   
+  .high-score-display {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+  }
+
   .player-info {
     position: absolute;
     bottom: 0;
@@ -98,33 +111,60 @@
     height: 5px;
     background: url(/images/arrow.png) no-repeat no-repeat;
   }
-  .Character_sprite {
-    overflow: hidden;
-    top: -3px;
-    background: url(/images/characters.png);
+  /* .space_ship_beige {
+    height: 100%;
+    width: 100%;
+    background: url(/images/shipBeige_manned.png) no-repeat no-repeat;
+    background-size: contain;
+    background-position: center;
   }
-  .Character[data-direction="right"] .Character_sprite {
+  .space_ship_blue {
+    height: 100%;
+    width: 100%;
+    background: url(/images/shipBlue_manned.png) no-repeat no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+  .space_ship_green {
+    height: 100%;
+    width: 100%;
+    background: url(/images/shipGreen_manned.png) no-repeat no-repeat;
+    background-size: contain;
+    background-position: center;
+  } */
+ .Character_sprite {
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: contain;
+  }
+  /* .Character[data-direction="right"] .Character_sprite {
     background-position-x: 16px;
+  } */
+  .Character[data-color="beige"] .Character_sprite {
+    background-image: url(/images/shipBeige_manned.png);
   }
-  .Character[data-color="red"] .Character_sprite {
-    background-position-y: -16px;
-  }
-  .Character[data-color="orange"] .Character_sprite {
-    background-position-y: -32px;
-  }
-  .Character[data-color="yellow"] .Character_sprite {
-    background-position-y: -48px;
+  .Character[data-color="blue"] .Character_sprite {
+    background-image: url(/images/shipBlue_manned.png);
   }
   .Character[data-color="green"] .Character_sprite {
+    background-image: url(/images/shipGreen_manned.png);
+  }
+  .Character[data-color="pink"] .Character_sprite {
+    background-image: url(/images/shipPink_manned.png);
+  }
+  .Character[data-color="yellow"] .Character_sprite {
+    background-image: url(/images/shipYellow_manned.png);
+  }
+  /* .Character[data-color="green"] .Character_sprite {
     background-position-y: -64px;
   }
   .Character[data-color="purple"] .Character_sprite {
     background-position-y: -80px;
-  }
+  } */
   .Character_shadow {
     background: url(/images/shadow.png) no-repeat no-repeat;
   }
-  
   .Character_name-container {
     position: absolute;
     top: -12px;
@@ -138,20 +178,98 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .Character_coins {
+  .Character_stars {
     margin-left: 1px;
     color: gold;
   }
   
-  /* Coins */
-  .Coin_sprite {
-    background: url(/images/coin.png) no-repeat no-repeat;
-    animation: coinFloat 0.8s linear infinite alternate-reverse;
+  /* stars */
+  .star_sprite01 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserBlue08.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.5s linear infinite alternate-reverse;
   }
-  @keyframes coinFloat {
+  .star_sprite02 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserBlue09.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.9s linear infinite alternate-reverse;
+  }
+  .star_sprite03 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserBlue10.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+  .star_sprite04 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserBlue11.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.5s linear infinite alternate-reverse;
+  }
+  .star_sprite05 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserRed09.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.9s linear infinite alternate-reverse;
+  }
+  .star_sprite06 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserRed10.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+  .star_sprite07 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserRed08.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.5s linear infinite alternate-reverse;
+  }
+  .star_sprite08 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserRed11.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 0.9s linear infinite alternate-reverse;
+  }
+  .star_sprite09 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserGreen16.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+  .star_sprite10 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserGreen15.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+  .star_sprite11 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserGreen14.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+  .star_sprite12 {
+    height: 10px;
+    width: 10px;
+    background: url(/images/laserGreen01.png) no-repeat no-repeat;
+    background-size: contain;
+    animation: starFloat 1s linear infinite alternate-reverse;
+  }
+
+  @keyframes starFloat {
     from { transform: translateY(0) }
-    to { transform: translateY(5px) }
-  }
-  .Coin_shadow {
-    background: url(/images/coin-shadow.png) no-repeat no-repeat;
+    to { transform: translateY(3px) }
   }
