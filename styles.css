@@ -6,7 +6,9 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    background: rgb(36, 33, 33);
+    background: url("https://i.pinimg.com/originals/43/e9/16/43e9164cfe2537bb9d6746b4d053d032.gif") no-repeat no-repeat;
+    background-size: cover;
+    background-position: center;
     font-family: 'Source Sans Pro', sans-serif;
     display: flex;
     align-items: center;
@@ -17,9 +19,7 @@
     position: relative;
     width: 320px;
     height: 256px;
-    background: url("https://i.pinimg.com/originals/43/e9/16/43e9164cfe2537bb9d6746b4d053d032.gif") no-repeat no-repeat;
-    background-size: cover;
-    background-position: right;
+    background: rgba(0, 0, 0, 0.81);
     transform: scale(2);
     image-rendering: pixelated;
     border: 2px solid rgb(37, 55, 73);
@@ -112,36 +112,13 @@
     height: 5px;
     background: url(/images/arrow.png) no-repeat no-repeat;
   }
-  /* .space_ship_beige {
-    height: 100%;
-    width: 100%;
-    background: url(/images/shipBeige_manned.png) no-repeat no-repeat;
-    background-size: contain;
-    background-position: center;
-  }
-  .space_ship_blue {
-    height: 100%;
-    width: 100%;
-    background: url(/images/shipBlue_manned.png) no-repeat no-repeat;
-    background-size: contain;
-    background-position: center;
-  }
-  .space_ship_green {
-    height: 100%;
-    width: 100%;
-    background: url(/images/shipGreen_manned.png) no-repeat no-repeat;
-    background-size: contain;
-    background-position: center;
-  } */
  .Character_sprite {
     height: 100%;
     width: 100%;
     background-position: center;
     background-size: contain;
   }
-  /* .Character[data-direction="right"] .Character_sprite {
-    background-position-x: 16px;
-  } */
+
   .Character[data-color="beige"] .Character_sprite {
     background-image: url(/images/shipBeige_manned.png);
   }
@@ -157,12 +134,7 @@
   .Character[data-color="yellow"] .Character_sprite {
     background-image: url(/images/shipYellow_manned.png);
   }
-  /* .Character[data-color="green"] .Character_sprite {
-    background-position-y: -64px;
-  }
-  .Character[data-color="purple"] .Character_sprite {
-    background-position-y: -80px;
-  } */
+
   .Character_shadow {
     background: url(/images/shadow.png) no-repeat no-repeat;
   }

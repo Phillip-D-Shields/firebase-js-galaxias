@@ -9,13 +9,18 @@
     />
     <link rel="stylesheet" href="/styles.css" type="text/css" />
   </head>
+
   <body>
+    <!-- high score display -->
     <div class="high-score-display">
       galaxias high score
       <h1><span id="highScoreName">player</span> </h1>
       <h1>: <span id="highScore">score</span> </h1>
     </div>
+    <!-- main game display -->
     <div class="game-container"></div>
+
+    <!-- player name and color input options -->
     <div class="player-info">
       <div>
         <label for="player-name">your call sign</label>
@@ -26,6 +31,8 @@
       </div>
     </div>
 
+
+    <!-- firebase modules -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -43,6 +50,7 @@
       firebase.initializeApp(firebaseConfig);
     </script>
 
+    <!-- local js modules for key events and main game logic -->
     <script src="/KeyPressListener.js"></script>
     <script src="/app.js"></script>
   </body>
