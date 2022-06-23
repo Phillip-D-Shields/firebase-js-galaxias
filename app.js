@@ -1,3 +1,4 @@
+// map data object that contains min and max grid values, blocked spaces for future game implementation
 const mapData = {
   minX: 0,
   maxX: 20,
@@ -19,8 +20,9 @@ const mapData = {
   },
 };
 
-// Options for Player Colors... these are in the same order as our sprite sheet
+// Options for player ship colors
 const playerColors = ["beige", "blue", "green", "pink", "yellow"];
+// options for star shapes and colors
 const starSprites = [
   "star_sprite01",
   "star_sprite02",
@@ -36,10 +38,8 @@ const starSprites = [
   "star_sprite12",
 ];
 
-let highScoreName = "";
-let highScore = 0;
 
-//Misc Helpers
+//some nifty helpers
 function randomFromArray(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
@@ -47,6 +47,7 @@ function getKeyString(x, y) {
   return `${x}x${y}`;
 }
 
+// auto generate a user name when they join
 function createName() {
   const prefix = randomFromArray([
     "COOL",
@@ -87,6 +88,7 @@ function createName() {
   return `${prefix} ${animal}`;
 }
 
+// logic to check if grid square is accessible
 function isSolid(x, y) {
   // const blockedNextSpace = mapData.blockedSpaces[getKeyString(x, y)];
   return (
@@ -98,6 +100,7 @@ function isSolid(x, y) {
   );
 }
 
+// random grid selectory for player and star placement
 function getRandomSafeSpot() {
   return {
     x: Math.floor(Math.random() * mapData.maxX),
@@ -105,25 +108,34 @@ function getRandomSafeSpot() {
   };
 }
 
+
+// anonymous function that fires when file is loaded
+// contains game instance logic
+// big and nasty, but works
 (function () {
+
+  // reassignable variables
   let playerId;
   let playerRef;
   let players = {};
   let playerElements = {};
   let stars = {};
   let starElements = {};
-  let highScoreName = "";
-  let highScore = 0;
+  let highScoreName;
+  let highScore;
 
+  // constant variables
   const gameContainer = document.querySelector(".game-container");
   const playerNameInput = document.querySelector("#player-name");
   const playerColorButton = document.querySelector("#player-color");
 
-  const elementValuesArray = [1, 1, 2, 3, 5, 8, 13, 25, -1, -1, -2, -3, -13];
+  // array of possible star values
+  const starValuesArray = [1, 1, 2, 3, 5, 8, 13, 25, -1, -1, -2, -3, -13];
 
+  // function to place a star with assigned coordinates, value, and database refernce
   function placeStar() {
     const { x, y } = getRandomSafeSpot();
-    const value = randomFromArray(elementValuesArray);
+    const value = randomFromArray(starValuesArray);
     const starRef = firebase.database().ref(`stars/${getKeyString(x, y)}`);
     starRef.set({
       x,
@@ -131,12 +143,14 @@ function getRandomSafeSpot() {
       value,
     });
 
+    // random timeout before placing next star
     const starTimeouts = [1000, 3000, 10000, 5000, 700];
     setTimeout(() => {
       placeStar();
     }, randomFromArray(starTimeouts));
   }
 
+  // logic to grab a star and update players realtime score
   function attemptGrabStar(x, y) {
     const key = getKeyString(x, y);
     if (stars[key]) {
@@ -149,10 +163,12 @@ function getRandomSafeSpot() {
     }
   }
 
+  // helper to check highscore
   function checkHighScore(highScore, playerScore) {
     return playerScore > highScore;
   }
 
+  // logic to move, change current direction, and attempt to grab any stars on new coordinates
   function handleArrowPress(xChange = 0, yChange = 0) {
     const newX = players[playerId].x + xChange;
     const newY = players[playerId].y + yChange;
@@ -171,21 +187,36 @@ function getRandomSafeSpot() {
     }
   }
 
+  // function to init directional event listeners and database references
   function initGame() {
+    // keyboard directional event listeners
     new KeyPressListener("ArrowUp", () => handleArrowPress(0, -1));
     new KeyPressListener("ArrowDown", () => handleArrowPress(0, 1));
     new KeyPressListener("ArrowLeft", () => handleArrowPress(-1, 0));
     new KeyPressListener("ArrowRight", () => handleArrowPress(1, 0));
 
+    // database reference objects
     const allPlayersRef = firebase.database().ref(`players`);
     const allStarsRef = firebase.database().ref(`stars`);
     const highScoreRef = firebase.database().ref(`high-score`);
 
-    highScoreRef.set({
-      name: highScoreName,
-      score: highScore,
-    });
-
+    // check if highscore exists in database reference, update with existing values or init default values
+    highScoreRef.get().then((snapshot) => {
+      if (snapshot.exists()) {
+        score = snapshot.val();
+        highScoreName = score.name;
+        highScore = score.score;
+        document.querySelector("#highScoreName").textContent = highScoreName;
+        document.querySelector("#highScore").textContent = highScore;
+      } else {
+        highScoreRef.set({
+          name: '',
+          score: 0,
+        });
+      }
+    })
+    
+    // update players data whenever a change occurs 
     allPlayersRef.on("value", (snapshot) => {
       //Fires whenever a change occurs
       players = snapshot.val() || {};
@@ -202,6 +233,7 @@ function getRandomSafeSpot() {
         const top = 16 * characterState.y - 4 + "px";
         el.style.transform = `translate3d(${left}, ${top}, 0)`;
 
+        // check if new high score has been achieved
         if (checkHighScore(highScore, characterState.stars)) {
           console.log("new high score");
           highScoreName = characterState.name;
@@ -211,14 +243,16 @@ function getRandomSafeSpot() {
             name: highScoreName,
             score: highScore,
           });
+          // update ui
           document.querySelector("#highScoreName").textContent = highScoreName;
           document.querySelector("#highScore").textContent = highScore;
         }
       });
     });
 
+    // update players data when a new player joins
     allPlayersRef.on("child_added", (snapshot) => {
-      //Fires whenever a new node is added the tree
+      //create new node on the tree and add ui elements
       const addedPlayer = snapshot.val();
       const characterElement = document.createElement("div");
 
@@ -239,7 +273,7 @@ function getRandomSafeSpot() {
         `;
       playerElements[addedPlayer.id] = characterElement;
 
-      //Fill in some initial state
+      //initial state
       characterElement.querySelector(".Character_name").innerText =
         addedPlayer.name;
       characterElement.querySelector(".Character_stars").innerText =
@@ -254,40 +288,45 @@ function getRandomSafeSpot() {
       gameContainer.appendChild(characterElement);
     });
 
-    //Remove character DOM element after they leave
+    //remove character DOM node after they exit
     allPlayersRef.on("child_removed", (snapshot) => {
       const removedKey = snapshot.val().id;
       gameContainer.removeChild(playerElements[removedKey]);
       delete playerElements[removedKey];
     });
 
+    // update stars data on all changes
     allStarsRef.on("value", (snapshot) => {
       stars = snapshot.val() || {};
     });
-    //
+    
 
+    // add new stars to database
     allStarsRef.on("child_added", (snapshot) => {
+      // create new star nodes info for the tree
       const star = snapshot.val();
       const key = getKeyString(star.x, star.y);
       stars[key] = true;
       const starImage = randomFromArray(starSprites);
 
-      // Create the DOM Element
+      // new DOM node
       const starElement = document.createElement("div");
       starElement.classList.add("star", "grid-cell");
       starElement.innerHTML = `
           <div class="${starImage} grid-cell"></div>
         `;
 
-      // Position the Element
+      // position the node
       const left = 16 * star.x + "px";
       const top = 16 * star.y - 4 + "px";
       starElement.style.transform = `translate3d(${left}, ${top}, 0)`;
 
-      // Keep a reference for removal later and add to DOM
+      // update gamecontainer
       starElements[key] = starElement;
       gameContainer.appendChild(starElement);
     });
+
+    // remove star nodes
     allStarsRef.on("child_removed", (snapshot) => {
       const { x, y } = snapshot.val();
       const keyToRemove = getKeyString(x, y);
@@ -295,7 +334,7 @@ function getRandomSafeSpot() {
       delete starElements[keyToRemove];
     });
 
-    //Updates player name with text input
+    //update player name on DOM and db
     playerNameInput.addEventListener("change", (e) => {
       const newName = e.target.value || createName();
       playerNameInput.value = newName;
@@ -304,7 +343,7 @@ function getRandomSafeSpot() {
       });
     });
 
-    //Update player color on button click
+    //update player color on DOM and db
     playerColorButton.addEventListener("click", () => {
       const mySkinIndex = playerColors.indexOf(players[playerId].color);
       const nextColor = playerColors[mySkinIndex + 1] || playerColors[0];
@@ -313,14 +352,18 @@ function getRandomSafeSpot() {
       });
     });
 
-    //Place my first coin
+    //place that first star
     placeStar();
   }
 
+
+  // create new defaults each login
+  // TODO: modify to allow anon players to return with same info from last login
   firebase.auth().onAuthStateChanged((user) => {
     console.log(user);
     if (user) {
-      //You're logged in!
+      // logged in
+      // update db
       playerId = user.uid;
       playerRef = firebase.database().ref(`players/${playerId}`);
 
@@ -329,6 +372,7 @@ function getRandomSafeSpot() {
 
       const { x, y } = getRandomSafeSpot();
 
+      // auto generate defaults for new player
       playerRef.set({
         id: playerId,
         name,
@@ -339,16 +383,17 @@ function getRandomSafeSpot() {
         stars: 0,
       });
 
-      //Remove me from Firebase when I diconnect
+      //remove from firebase db on disconnect, saves usage
       playerRef.onDisconnect().remove();
 
-      //Begin the game now that we are signed in
+      // init the game for new player
       initGame();
     } else {
-      //You're logged out.
+      //not logged in, nothingness
     }
   });
 
+  // anon sign in logic
   firebase
     .auth()
     .signInAnonymously()

@@ -1,3 +1,4 @@
+// pretty standard keypress logic, stolen from another game thing i did
 class KeyPressListener {
     constructor(keyCode, callback) {
       let keySafe = true;

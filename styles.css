@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    background: rgb(54, 54, 54);
+    background: rgb(36, 33, 33);
     font-family: 'Source Sans Pro', sans-serif;
     display: flex;
     align-items: center;
@@ -22,19 +22,20 @@
     background-position: right;
     transform: scale(2);
     image-rendering: pixelated;
-    border: 2px solid slategray;
+    border: 2px solid rgb(37, 55, 73);
+    box-shadow: .25rem .25rem .25rem black;
   }
   
   .high-score-display {
     position: absolute;
     top: 0;
-    width: 100%;
+    width: 50%;
     text-align: center;
     font-size: 1rem;
     font-weight: bold;
     display: flex;
-    flex-direction: column;
     text-transform: uppercase;
+    color: white;
   }
 
   .player-info {
